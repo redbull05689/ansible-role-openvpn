@@ -52,6 +52,14 @@ Testing
 
 Install [Molecule](https://molecule.readthedocs.io/en/latest/installation.html) and [Testinfra](https://testinfra.readthedocs.io/en/latest/#quick-start) for local testing role.
 
+Install pyOpenSSL:
+
+```bash
+pip install pyOpenSSL
+```
+
+Run test:
+
 ```bash
 molecule test
 ```
