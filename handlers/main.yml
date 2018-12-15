@@ -1,0 +1,8 @@
+---
+- name: restart openvpn
+  become: true
+  systemd:
+    name: "openvpn-{{ openvpn_role }}@{{ openvpn_host_cn }}"
+    enabled: true
+    daemon-reload: true
+    state: restarted

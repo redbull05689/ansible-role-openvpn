@@ -1,0 +1,37 @@
+---
+- name: Gen server key
+  become: true
+  openssl_privatekey:
+    path: "{{ openvpn_config_path }}/{{ openvpn_host_key }}"
+    size: "{{ openvpn_key_size }}"
+  notify: restart openvpn
+
+- name: Create request
+  become: true
+  openssl_csr:
+    path: "{{ openvpn_config_path }}/{{ openvpn_host_csr }}"
+    privatekey_path: "{{ openvpn_config_path }}/{{ openvpn_host_key }}"
+    common_name: "{{ openvpn_host_cn }}"
+
+- name: Get request
+  become: true
+  fetch:
+    src: "{{ openvpn_config_path }}/{{ openvpn_host_csr }}"
+    dest: "{{ openvpn_local_key_path }}/{{ openvpn_host_csr }}"
+    flat: true
+
+- name: Generate an OpenSSL certificate signed with your own CA certificate
+  local_action:
+    module: openssl_certificate
+    path: "{{ openvpn_local_key_path }}/{{ openvpn_host_crt }}"
+    csr_path: "{{ openvpn_local_key_path }}/{{ openvpn_host_csr }}"
+    ownca_path: "{{ openvpn_local_key_path }}/{{ openvpn_ca_crt }}"
+    ownca_privatekey_path: "{{ openvpn_local_key_path }}/{{ openvpn_ca_key }}"
+    provider: ownca
+
+- name: Copy certificate
+  become: true
+  copy:
+    src: "{{ openvpn_local_key_path }}/{{ openvpn_host_crt }}"
+    dest: "{{ openvpn_config_path }}/{{ openvpn_host_crt }}"
+  notify: restart openvpn

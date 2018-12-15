@@ -1,0 +1,33 @@
+---
+- name: Create key directory
+  local_action:
+    module: file
+    dest: "{{ openvpn_local_key_path }}"
+    state: directory
+  run_once: true
+
+- name: Gen CA key
+  local_action:
+    module: openssl_privatekey
+    path: "{{ openvpn_local_key_path }}/{{ openvpn_ca_key }}"
+    size: "{{ openvpn_key_size }}"
+  run_once: true
+  notify: restart openvpn
+
+- name: Create request
+  local_action:
+    module: openssl_csr
+    path: "{{ openvpn_local_key_path }}/{{ openvpn_ca_csr }}"
+    privatekey_path: "{{ openvpn_local_key_path }}/{{ openvpn_ca_key }}"
+    common_name: "{{ openvpn_ca_cn }}"
+  run_once: true
+
+- name: Generate a Self Signed OpenSSL certificate
+  local_action:
+    module: openssl_certificate
+    path: "{{ openvpn_local_key_path }}/{{ openvpn_ca_crt }}"
+    privatekey_path: "{{ openvpn_local_key_path }}/{{ openvpn_ca_key }}"
+    csr_path: "{{ openvpn_local_key_path }}/{{ openvpn_ca_csr }}"
+    provider: selfsigned
+  run_once: true
+  notify: restart openvpn

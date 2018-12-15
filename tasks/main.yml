@@ -1,0 +1,29 @@
+---
+- import_tasks: ca.yml
+
+- import_tasks: install.yml
+  become: true
+
+- import_tasks: key.yml
+
+- name: Copy ca
+  become: true
+  copy:
+    src: "{{ openvpn_local_key_path }}/{{ openvpn_ca_crt }}"
+    dest: "{{ openvpn_config_path }}/{{ openvpn_ca_crt }}"
+  notify: restart openvpn
+
+- name: Diffie-Hellman
+  become: true
+  openssl_dhparam:
+    path: "{{ openvpn_config_path }}/{{ openvpn_host_dh }}"
+    size: "{{ openvpn_key_size }}"
+  when: openvpn_role == "server"
+  notify: restart openvpn
+
+- name: Configuration file
+  become: true
+  template:
+    src: "{{ openvpn_role }}.conf.j2"
+    dest: "{{ openvpn_config_path }}/{{ openvpn_host_cn }}.conf"
+  notify: restart openvpn

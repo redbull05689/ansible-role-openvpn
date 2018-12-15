@@ -1,0 +1,12 @@
+port {{ openvpn_port }}
+proto {{ openvpn_proto }}
+dev {{ openvpn_dev }}
+ca {{ openvpn_config_path }}/{{ openvpn_ca_crt }}
+cert {{ openvpn_config_path }}/{{ openvpn_host_crt }}
+key {{ openvpn_config_path }}/{{ openvpn_host_key }}
+dh {{ openvpn_config_path }}/{{ openvpn_host_dh }}
+server {{ openvpn_network }} {{ openvpn_netmask }}
+cipher {{ openvpn_cipher }}
+{% for option_line in openvpn_options %}
+{{ option_line }}
+{% endfor %}

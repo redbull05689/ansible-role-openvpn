@@ -1,0 +1,21 @@
+---
+- name: Install epel
+  yum:
+    name: epel-release
+
+- name: Install openssl
+  yum:
+    name: openssl
+  when: openvpn_role == 'server'
+
+- name: Install pip
+  yum:
+    name: python2-pip
+
+- name: Install pyOpenSSL
+  pip:
+    name: pyOpenSSL
+
+- name: Install openVPN
+  yum:
+    name: openvpn
