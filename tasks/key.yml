@@ -23,13 +23,13 @@
     flat: true
 
 - name: Generate an OpenSSL certificate signed with your own CA certificate
-  local_action:
-    module: openssl_certificate
+  openssl_certificate:
     path: "{{ openvpn_local_key_path }}/{{ openvpn_host_crt }}"
     csr_path: "{{ openvpn_local_key_path }}/{{ openvpn_host_csr }}"
     ownca_path: "{{ openvpn_local_key_path }}/{{ openvpn_ca_crt }}"
     ownca_privatekey_path: "{{ openvpn_local_key_path }}/{{ openvpn_ca_key }}"
     provider: ownca
+  delegate_to: localhost
 
 - name: Copy certificate
   become: true
