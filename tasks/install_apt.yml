@@ -1,0 +1,20 @@
+---
+- name: Install openssl
+  apt:
+    name: openssl
+    force_apt_get: true
+  when: openvpn_role == 'server'
+
+- name: Install pip
+  apt:
+    name: python-pip
+    force_apt_get: true
+
+- name: Install pyOpenSSL
+  pip:
+    name: pyOpenSSL
+
+- name: Install openVPN
+  apt:
+    name: openvpn
+    force_apt_get: true

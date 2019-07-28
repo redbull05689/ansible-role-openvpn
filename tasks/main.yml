@@ -1,8 +1,15 @@
 ---
 - import_tasks: ca.yml
 
-- import_tasks: install.yml
+- name: Install openVPN (yum)
+  import_tasks: install_yum.yml
   become: true
+  when: ansible_pkg_mgr == "yum"
+
+- name: Install openVPN (apt)
+  import_tasks: install_apt.yml
+  become: true
+  when: ansible_pkg_mgr == "apt"
 
 - import_tasks: key.yml
 

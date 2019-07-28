@@ -1,5 +1,10 @@
 ---
-- name: Converge
-  hosts: all
+- name: Converge servers
+  hosts: servers
+  roles:
+    - role: ansible-role-openvpn
+
+- name: Converge clients
+  hosts: clients
   roles:
     - role: ansible-role-openvpn

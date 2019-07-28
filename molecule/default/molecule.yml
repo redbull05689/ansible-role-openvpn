@@ -36,6 +36,36 @@ platforms:
         aliases:
           - client1
     command: /usr/sbin/init
+  - name: serverubuntu1
+    hostname: serverubuntu1
+    groups:
+      - servers
+    image: jrei/systemd-ubuntu:18.04
+    privileged: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    networks:
+      - name: vpn
+        links:
+          - clientubuntu1:clientubuntu1
+        aliases:
+          - serverubuntu1
+    command: /sbin/init
+  - name: clientubuntu1
+    hostname: clientubuntu1
+    groups:
+      - clients
+    image: jrei/systemd-ubuntu:18.04
+    privileged: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    networks:
+      - name: vpn
+        links:
+          - serverubuntu1:serverubuntu1
+        aliases:
+          - clientubuntu1
+    command: /sbin/init
 provisioner:
   name: ansible
   inventory:
@@ -46,12 +76,17 @@ provisioner:
         openvpn_role: server
       clients:
         openvpn_role: client
-        openvpn_server_ip: server1
     host_vars:
       server1:
         openvpn_host_cn: server1
       client1:
         openvpn_host_cn: client1
+        openvpn_server_ip: server1
+      serverubuntu1:
+        openvpn_host_cn: serverubuntu1
+      clientubuntu1:
+        openvpn_host_cn: clientubuntu1
+        openvpn_server_ip: serverubuntu1
   lint:
     name: ansible-lint
 scenario:

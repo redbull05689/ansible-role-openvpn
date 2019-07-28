@@ -20,6 +20,8 @@
     path: "{{ openvpn_local_key_path }}/{{ openvpn_ca_csr }}"
     privatekey_path: "{{ openvpn_local_key_path }}/{{ openvpn_ca_key }}"
     common_name: "{{ openvpn_ca_cn }}"
+    basic_constraints:
+      - "CA:TRUE"
   run_once: true
 
 - name: Generate a Self Signed OpenSSL certificate

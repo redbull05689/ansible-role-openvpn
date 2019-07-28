@@ -12,6 +12,8 @@
     path: "{{ openvpn_config_path }}/{{ openvpn_host_csr }}"
     privatekey_path: "{{ openvpn_config_path }}/{{ openvpn_host_key }}"
     common_name: "{{ openvpn_host_cn }}"
+    basic_constraints:
+      - "CA:FALSE"
 
 - name: Get request
   become: true
